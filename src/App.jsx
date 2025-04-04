@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import './App.css'
 import Memo from './components/memo/Memo'
-import memoService from './api/memoService'
+import apiService from './api' // memoService 대신 apiService 사용
 
 function App() {
   const [memos, setMemos] = useState([]);
@@ -14,7 +14,7 @@ function App() {
       try {
         setIsLoading(true);
         setError(null);
-        const data = await memoService.getAllMemos();
+        const data = await apiService.getAllMemos();
         setMemos(data);
       } catch (error) {
         console.error('메모를 불러오는 중 오류가 발생했습니다:', error);
@@ -50,7 +50,7 @@ function App() {
     try {
       setIsLoading(true);
       setError(null);
-      const data = await memoService.getAllMemos();
+      const data = await apiService.getAllMemos();
       setMemos(data);
     } catch (error) {
       console.error('메모를 새로고침하는 중 오류가 발생했습니다:', error);

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import CommentItem from './CommentItem';
 import CommentForm from './CommentForm';
-import memoService from '../../api/memoService';
+import apiService from '../../api';
 import './Comments.css';
 
 const Comments = ({ memoId, initialComments = [] }) => {
@@ -16,7 +16,7 @@ const Comments = ({ memoId, initialComments = [] }) => {
       
       setIsLoading(true);
       try {
-        const loadedComments = await memoService.getComments(memoId);
+        const loadedComments = await apiService.getComments(memoId);
         setComments(loadedComments);
       } catch (error) {
         console.error('댓글을 불러오는 중 오류가 발생했습니다:', error);
@@ -31,7 +31,7 @@ const Comments = ({ memoId, initialComments = [] }) => {
   const handleAddComment = async (newComment) => {
     setIsLoading(true);
     try {
-      const addedComment = await memoService.addComment(memoId, newComment);
+      const addedComment = await apiService.addComment(memoId, newComment);
       setComments([...comments, addedComment]);
       setShowCommentForm(false);
     } catch (error) {
@@ -45,7 +45,7 @@ const Comments = ({ memoId, initialComments = [] }) => {
   const handleUpdateComment = async (updatedComment) => {
     setIsLoading(true);
     try {
-      await memoService.updateComment(updatedComment.id, updatedComment.text);
+      await apiService.updateComment(updatedComment.id, updatedComment.text);
       const updatedComments = comments.map(comment => 
         comment.id === updatedComment.id ? updatedComment : comment
       );
@@ -65,7 +65,7 @@ const Comments = ({ memoId, initialComments = [] }) => {
 
     setIsLoading(true);
     try {
-      await memoService.deleteComment(commentId);
+      await apiService.deleteComment(commentId);
       const updatedComments = comments.filter(comment => comment.id !== commentId);
       setComments(updatedComments);
     } catch (error) {

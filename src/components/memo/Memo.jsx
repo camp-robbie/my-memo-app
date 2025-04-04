@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Comments from '../comment/Comments';
-import memoService from '../../api/memoService';
+import apiService from '../../api';
 import './Memo.css';
 
 const Memo = ({ initialData = {}, onDelete, onUpdate }) => {
@@ -24,7 +24,7 @@ const Memo = ({ initialData = {}, onDelete, onUpdate }) => {
       
       setIsLoading(true);
       try {
-        const memoDetails = await memoService.getMemoById(initialData.id);
+        const memoDetails = await apiService.getMemoById(initialData.id);
         setMemo({
           title: memoDetails.title || '',
           content: memoDetails.content || '',
@@ -51,13 +51,13 @@ const Memo = ({ initialData = {}, onDelete, onUpdate }) => {
     try {
       if (!initialData.id) {
         // 새 메모 생성
-        const newMemo = await memoService.createMemo(memo);
+        const newMemo = await apiService.createMemo(memo);
         if (onUpdate) {
           onUpdate(newMemo);
         }
       } else {
         // 기존 메모 수정
-        const updatedMemo = await memoService.updateMemo(initialData.id, memo);
+        const updatedMemo = await apiService.updateMemo(initialData.id, memo);
         if (onUpdate) {
           onUpdate({ ...initialData, ...updatedMemo });
         }
@@ -96,7 +96,7 @@ const Memo = ({ initialData = {}, onDelete, onUpdate }) => {
     if (onDelete && initialData.id) {
       setIsLoading(true);
       try {
-        await memoService.deleteMemo(initialData.id);
+        await apiService.deleteMemo(initialData.id);
         onDelete(initialData.id);
       } catch (error) {
         console.error('메모 삭제 중 오류 발생:', error);

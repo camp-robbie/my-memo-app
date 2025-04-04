@@ -9,6 +9,7 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  withCredentials: true, // CORS 요청에 쿠키 포함
 });
 
 // 응답 인터셉터 설정
