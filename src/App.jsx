@@ -1,31 +1,28 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import './App.css'
-import RoundMemo from './components/memo/RoundMemo'
+import Memo from './components/memo/Memo'
+import memoService from './api/memoService'
 
 function App() {
-  const [memos, setMemos] = useState([
-    {
-      id: 1,
-      title: '회의 내용 정리',
-      content: '오늘 회의에서는 다음과 같은 내용이 논의되었습니다.\n1. 프로젝트 일정 검토\n2. 담당자 배정\n3. 다음 회의 일정',
-      author: '김철수',
-      date: '2025-04-01',
-      comments: [
-        {
-          id: 101,
-          text: '회의 내용 잘 정리해주셔서 감사합니다!',
-          author: '이영희',
-          date: '2025-04-02'
-        },
-        {
-          id: 102,
-          text: '다음 회의는 금요일 오후 2시로 확정되었습니다.',
-          author: '박지훈',
-          date: '2025-04-03'
-        }
-      ]
-    }
-  ]);
+  const [memos, setMemos] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // 초기 데이터 로딩
+  useEffect(() => {
+    const loadMemos = async () => {
+      try {
+        const data = await memoService.getAllMemos();
+        setMemos(data);
+      } catch (error) {
+        console.error('메모를 불러오는 중 오류가 발생했습니다:', error);
+        alert('메모를 불러오는 데 실패했습니다.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadMemos();
+  }, []);
 
   const addNewMemo = () => {
     setMemos([...memos, { id: Date.now() }]);
@@ -35,18 +32,44 @@ function App() {
     setMemos(memos.filter(memo => memo.id !== memoId));
   };
 
+  const handleUpdateMemo = (updatedMemo) => {
+    setMemos(memos.map(memo => 
+      memo.id === updatedMemo.id ? updatedMemo : memo
+    ));
+  };
+
   return (
     <div className="app-container">
       <header className="app-header">
         <h1>메모 앱</h1>
-        <button onClick={addNewMemo} className="new-memo-button">새 메모</button>
+        <button onClick={addNewMemo} className="new-memo-button" disabled={isLoading}>
+          새 메모
+        </button>
       </header>
       
-      <div className="memos-container">
-        {memos.map(memo => (
-          <RoundMemo key={memo.id} initialData={memo} onDelete={handleDeleteMemo} />
-        ))}
-      </div>
+      {isLoading ? (
+        <div className="loading-container">
+          <div className="loading-spinner"></div>
+          <p>메모를 불러오는 중...</p>
+        </div>
+      ) : (
+        <div className="memos-container">
+          {memos.length === 0 ? (
+            <div className="no-memos">
+              <p>저장된 메모가 없습니다. 새 메모를 작성해보세요!</p>
+            </div>
+          ) : (
+            memos.map(memo => (
+              <Memo 
+                key={memo.id} 
+                initialData={memo} 
+                onDelete={handleDeleteMemo}
+                onUpdate={handleUpdateMemo}
+              />
+            ))
+          )}
+        </div>
+      )}
     </div>
   )
 }

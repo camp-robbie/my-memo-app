@@ -1,2 +1,2 @@
 // 이 파일은 더 이상 사용되지 않으며 삭제되었습니다.
-// src/components/comment/CommentItem.jsx를 대신 사용하세요.
+// src/App.jsx가 현재 사용 중인 메인 앱 컴포넌트입니다.
