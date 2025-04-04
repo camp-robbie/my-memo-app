@@ -16,9 +16,34 @@ const Memo = ({ initialData = {}, onDelete, onUpdate }) => {
   const [showComments, setShowComments] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  // 메모 상세 정보 로드 (서버에서 최신 데이터 가져오기)
+  useEffect(() => {
+    const loadMemoDetails = async () => {
+      // 새 메모인 경우 또는 ID가 없는 경우 건너뛰기
+      if (!initialData.id || !initialData.title) return;
+      
+      setIsLoading(true);
+      try {
+        const memoDetails = await memoService.getMemoById(initialData.id);
+        setMemo({
+          title: memoDetails.title || '',
+          content: memoDetails.content || '',
+          author: memoDetails.author || initialData.author || '',
+          date: memoDetails.createdAt || initialData.date || new Date().toISOString().split('T')[0],
+        });
+      } catch (error) {
+        console.error('메모 상세 정보를 불러오는 중 오류가 발생했습니다:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadMemoDetails();
+  }, [initialData.id, initialData.title]);
+
   const handleSaveMemo = async () => {
-    if (!memo.title || !memo.author) {
-      alert('제목과 작성자는 필수 입력 항목입니다.');
+    if (!memo.title) {
+      alert('제목은 필수 입력 항목입니다.');
       return;
     }
 
@@ -32,9 +57,9 @@ const Memo = ({ initialData = {}, onDelete, onUpdate }) => {
         }
       } else {
         // 기존 메모 수정
-        await memoService.updateMemo(initialData.id, memo);
+        const updatedMemo = await memoService.updateMemo(initialData.id, memo);
         if (onUpdate) {
-          onUpdate({ ...initialData, ...memo });
+          onUpdate({ ...initialData, ...updatedMemo });
         }
       }
       setIsEditing(false);
@@ -158,8 +183,8 @@ const Memo = ({ initialData = {}, onDelete, onUpdate }) => {
             <div className="memo-header">
               <h2 className="memo-title">{memo.title}</h2>
               <div className="memo-meta">
-                <span className="memo-author">작성자: {memo.author}</span>
-                <span className="memo-date">작성일: {memo.date}</span>
+                {memo.author && <span className="memo-author">작성자: {memo.author}</span>}
+                {memo.date && <span className="memo-date">작성일: {memo.date}</span>}
               </div>
             </div>
             <div className="memo-content">{memo.content}</div>

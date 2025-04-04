@@ -9,6 +9,25 @@ const Comments = ({ memoId, initialComments = [] }) => {
   const [showCommentForm, setShowCommentForm] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  // 댓글 목록 불러오기
+  useEffect(() => {
+    const loadComments = async () => {
+      if (!memoId) return;
+      
+      setIsLoading(true);
+      try {
+        const loadedComments = await memoService.getComments(memoId);
+        setComments(loadedComments);
+      } catch (error) {
+        console.error('댓글을 불러오는 중 오류가 발생했습니다:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadComments();
+  }, [memoId]);
+
   const handleAddComment = async (newComment) => {
     setIsLoading(true);
     try {
@@ -26,7 +45,7 @@ const Comments = ({ memoId, initialComments = [] }) => {
   const handleUpdateComment = async (updatedComment) => {
     setIsLoading(true);
     try {
-      await memoService.updateComment(memoId, updatedComment.id, updatedComment.text);
+      await memoService.updateComment(updatedComment.id, updatedComment.text);
       const updatedComments = comments.map(comment => 
         comment.id === updatedComment.id ? updatedComment : comment
       );
@@ -46,7 +65,7 @@ const Comments = ({ memoId, initialComments = [] }) => {
 
     setIsLoading(true);
     try {
-      await memoService.deleteComment(memoId, commentId);
+      await memoService.deleteComment(commentId);
       const updatedComments = comments.filter(comment => comment.id !== commentId);
       setComments(updatedComments);
     } catch (error) {
