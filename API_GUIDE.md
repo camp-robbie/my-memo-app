@@ -6,22 +6,22 @@
 
 ### 메모 API
 
-| 메서드 | 경로 | 설명 | 요청 예시 | 응답 |
-|--------|------|------|-----------|------|
-| POST | `/api/memos` | 메모 작성 | `{ "title": "JPA 공부", "content": "영속성 컨텍스트 정리" }` | 201 Created |
-| GET | `/api/memos` | 메모 목록 조회 | - | 메모 리스트 |
-| GET | `/api/memos/{id}` | 메모 상세 조회 | - | 메모 상세 |
-| PUT | `/api/memos/{id}` | 메모 수정 | `{ "title": "JPA 정리", "content": "flush 설명 추가" }` | 200 OK |
-| DELETE | `/api/memos/{id}` | 메모 삭제 | - | 204 No Content |
+| 메서드 | 경로 | 설명 | 요청 예시                                                                                                   | 응답 |
+|--------|------|------|---------------------------------------------------------------------------------------------------------|------|
+| POST | `/api/memos` | 메모 작성 | `{ "title": "JPA 공부", "author": "작성자", "content": "영속성 컨텍스트 정리", "updatedAt": "2025-04-01 hhmmss" }` | 201 Created |
+| GET | `/api/memos` | 메모 목록 조회 | -                                                                                                       | 메모 리스트 |
+| GET | `/api/memos/{id}` | 메모 상세 조회 | -                                                                                                       | 메모 상세 |
+| PUT | `/api/memos/{id}` | 메모 수정 | `{ "title": "JPA 정리", "author": "작성자", "content": "flush 설명 추가", "updatedAt": "2025-04-01 hhmmss" }`                                    | 200 OK |
+| DELETE | `/api/memos/{id}` | 메모 삭제 | -                                                                                                       | 204 No Content |
 
 ### 댓글 API
 
-| 메서드 | 경로 | 설명 | 요청 예시 | 응답 |
-|--------|------|------|-----------|------|
-| POST | `/api/memos/{memoId}/comments` | 댓글 작성 | `{ "content": "좋은 정리 감사합니다!" }` | 201 Created |
-| GET | `/api/memos/{memoId}/comments` | 댓글 목록 조회 | - | 댓글 리스트 |
-| PUT | `/api/comments/{commentId}` | 댓글 수정 | `{ "content": "내용 수정합니다." }` | 200 OK |
-| DELETE | `/api/comments/{commentId}` | 댓글 삭제 | - | 204 No Content |
+| 메서드 | 경로 | 설명 | 요청 예시                                                                                 | 응답 |
+|--------|------|------|---------------------------------------------------------------------------------------|------|
+| POST | `/api/memos/{memoId}/comments` | 댓글 작성 | `{ "author": "작성자", "content": "좋은 정리 감사합니다!", "updatedAt": "2025-04-01 hhmmss" }` | 201 Created |
+| GET | `/api/memos/{memoId}/comments` | 댓글 목록 조회 | -                                                                                     | 댓글 리스트 |
+| PUT | `/api/comments/{commentId}` | 댓글 수정 | `{ "author": "작성자", "content": "내용 수정합니다.", "updatedAt": "2025-04-01 hhmmss" }`                                       | 200 OK |
+| DELETE | `/api/comments/{commentId}` | 댓글 삭제 | -                                                                                     | 204 No Content |
 
 ## API 서비스 사용법
 

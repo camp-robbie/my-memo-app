@@ -22,6 +22,37 @@ api.interceptors.response.use(
 );
 
 /**
+ * 댓글 객체를 일관된 형식으로 변환하는 유틸리티 함수
+ */
+const normalizeComment = (comment) => {
+  if (!comment) {
+    console.error('유효하지 않은 댓글 데이터:', comment);
+    return {
+      id: Date.now(),
+      text: '오류: 댓글을 불러올 수 없습니다.',
+      content: '오류: 댓글을 불러올 수 없습니다.',
+      author: '시스템',
+      date: new Date().toISOString()
+    };
+  }
+  
+  // 댓글 내용 확인
+  const commentContent = comment.content || comment.text || '';
+  
+  // ID 검증 및 생성
+  const commentId = comment.id || Date.now();
+  
+  return {
+    id: commentId,
+    // text와 content 필드를 모두 설정 (클라이언트측 호환성)
+    text: commentContent,
+    content: commentContent,
+    author: comment.author || '익명',
+    date: comment.updatedAt || comment.createdAt || comment.date || new Date().toISOString()
+  };
+};
+
+/**
  * 메모 서비스 API
  */
 const memoService = {
@@ -50,7 +81,9 @@ const memoService = {
     try {
       const response = await api.post('/memos', {
         title: memoData.title,
-        content: memoData.content
+        content: memoData.content,
+        author: memoData.author,
+        updatedAt: memoData.date
       });
       return response;
     } catch (error) {
@@ -64,7 +97,9 @@ const memoService = {
     try {
       const response = await api.put(`/memos/${id}`, {
         title: updatedData.title,
-        content: updatedData.content
+        content: updatedData.content,
+        author: updatedData.author, // 작성자 정보도 포함
+        updatedAt: updatedData.date // 날짜와 시간 정보 포함
       });
       return response;
     } catch (error) {
@@ -87,7 +122,11 @@ const memoService = {
   // 댓글 목록 조회
   getComments: async (memoId) => {
     try {
-      return await api.get(`/memos/${memoId}/comments`);
+      const comments = await api.get(`/memos/${memoId}/comments`);
+      // 댓글 데이터 정규화
+      return Array.isArray(comments) 
+        ? comments.map(normalizeComment) 
+        : [];
     } catch (error) {
       console.error('댓글 목록을 불러오는 중 오류가 발생했습니다:', error);
       throw error;
@@ -97,15 +136,38 @@ const memoService = {
   // 댓글 추가
   addComment: async (memoId, commentData) => {
     try {
-      const response = await api.post(`/memos/${memoId}/comments`, {
-        content: commentData.text
-      });
-      return {
-        id: response.id,
-        text: response.content,
+      console.log('댓글 추가 요청 데이터:', commentData);
+      const currentDateTime = new Date().toISOString();
+      
+      // 서버에 전송할 데이터 형식 맞추기
+      const requestData = {
+        content: commentData.text,
         author: commentData.author,
-        date: response.createdAt || new Date().toISOString().split('T')[0]
+        createdAt: currentDateTime
       };
+      console.log('서버에 전송할 댓글 데이터:', requestData);
+      
+      const response = await api.post(`/memos/${memoId}/comments`, requestData);
+      console.log('서버 응답 데이터:', response);
+      
+      // 응답 데이터가 없는 경우 기본값 설정
+      if (!response) {
+        console.warn('서버가 빈 응답을 반환했습니다. 기본 데이터를 사용합니다.');
+        return normalizeComment({
+          id: Date.now(),
+          content: commentData.text,
+          author: commentData.author,
+          createdAt: currentDateTime
+        });
+      }
+      
+      // 반환된 댓글 데이터를 클라이언트 형식으로 정규화
+      return normalizeComment({
+        id: response.id,
+        content: response.content || commentData.text,
+        author: response.author || commentData.author,
+        date: response.updatedAt || response.createdAt || currentDateTime
+      });
     } catch (error) {
       console.error('댓글 추가 중 오류가 발생했습니다:', error);
       throw error;
@@ -115,10 +177,19 @@ const memoService = {
   // 댓글 수정
   updateComment: async (commentId, updatedText) => {
     try {
+      const currentDateTime = new Date().toISOString();
       const response = await api.put(`/comments/${commentId}`, {
-        content: updatedText
+        content: updatedText,
+        updatedAt: currentDateTime
       });
-      return response;
+      
+      // 응답을 표준 형식으로 반환
+      return normalizeComment({
+        id: commentId,
+        content: response.content || updatedText,
+        author: response.author,
+        date: response.updatedAt || currentDateTime
+      });
     } catch (error) {
       console.error('댓글 수정 중 오류가 발생했습니다:', error);
       throw error;

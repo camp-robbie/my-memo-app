@@ -3,22 +3,50 @@ import './CommentItem.css';
 
 const CommentItem = ({ comment, onUpdate, onDelete, isLoading }) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [editedText, setEditedText] = useState(comment.text);
+  
+  // comment가 null인 경우를 처리
+  if (!comment) {
+    console.error('유효하지 않은 댓글 객체:', comment);
+    return null;
+  }
+  
+  // 댓글 내용 가져오기 (content 또는 text 필드 사용)
+  const commentText = ((comment.content || comment.text) || '').toString();
+  const [editedText, setEditedText] = useState(commentText);
 
   const handleSaveEdit = () => {
     if (!editedText.trim()) return;
     
     onUpdate({
       ...comment,
-      text: editedText
+      text: editedText,
+      content: editedText // API와의 호환성을 위해 두 필드 모두 설정
     });
     
     setIsEditing(false);
   };
 
   const handleCancelEdit = () => {
-    setEditedText(comment.text);
+    setEditedText(commentText);
     setIsEditing(false);
+  };
+
+  // 날짜 형식화 함수
+  const formatDate = (dateString) => {
+    if (!dateString) return '날짜 정보 없음';
+    
+    try {
+      return new Date(dateString).toLocaleString('ko-KR', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    } catch (e) {
+      console.error('날짜 변환 오류:', e);
+      return dateString; // 변환 실패 시 원래 문자열 반환
+    }
   };
 
   return (
@@ -35,7 +63,7 @@ const CommentItem = ({ comment, onUpdate, onDelete, isLoading }) => {
             <button 
               onClick={handleSaveEdit} 
               className="save-comment-button"
-              disabled={isLoading}
+              disabled={isLoading || !editedText.trim()}
             >
               저장
             </button>
@@ -52,8 +80,10 @@ const CommentItem = ({ comment, onUpdate, onDelete, isLoading }) => {
         <>
           <div className="comment-header">
             <div className="comment-info">
-              <span className="comment-author">{comment.author}</span>
-              <span className="comment-date">{comment.date}</span>
+              <span className="comment-author">{comment.author || '익명'}</span>
+              <span className="comment-date">
+                {formatDate(comment.date)}
+              </span>
             </div>
             <div className="comment-actions">
               <button 
@@ -81,7 +111,7 @@ const CommentItem = ({ comment, onUpdate, onDelete, isLoading }) => {
               </button>
             </div>
           </div>
-          <div className="comment-text">{comment.text}</div>
+          <div className="comment-text">{commentText || '(내용 없음)'}</div>
         </>
       )}
     </div>

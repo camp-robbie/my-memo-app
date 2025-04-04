@@ -4,11 +4,28 @@ import apiService from '../../api';
 import './Memo.css';
 
 const Memo = ({ initialData = {}, onDelete, onUpdate }) => {
+  // 현재 날짜와 시간을 ISO 형식으로 포맷팅하는 함수
+  const formatDateTimeForInput = (dateString) => {
+    if (!dateString) {
+      const now = new Date();
+      return now.toISOString().slice(0, 16); // YYYY-MM-DDTHH:MM 형식
+    }
+    
+    // 이미 날짜 문자열이 있는 경우
+    try {
+      const date = new Date(dateString);
+      return date.toISOString().slice(0, 16);
+    } catch (error) {
+      // 날짜 변환 오류 시 현재 시간 반환
+      return new Date().toISOString().slice(0, 16);
+    }
+  };
+
   const [memo, setMemo] = useState({
     title: initialData.title || '',
     content: initialData.content || '',
     author: initialData.author || '',
-    date: initialData.date || new Date().toISOString().split('T')[0],
+    date: formatDateTimeForInput(initialData.date),
   });
 
   // 새로 생성된 메모(제목이 없는 경우)는 자동으로 편집 모드로 시작
@@ -29,7 +46,7 @@ const Memo = ({ initialData = {}, onDelete, onUpdate }) => {
           title: memoDetails.title || '',
           content: memoDetails.content || '',
           author: memoDetails.author || initialData.author || '',
-          date: memoDetails.createdAt || initialData.date || new Date().toISOString().split('T')[0],
+          date: formatDateTimeForInput(memoDetails.updatedAt || initialData.date),
         });
       } catch (error) {
         console.error('메모 상세 정보를 불러오는 중 오류가 발생했습니다:', error);
@@ -82,7 +99,7 @@ const Memo = ({ initialData = {}, onDelete, onUpdate }) => {
         title: initialData.title || '',
         content: initialData.content || '',
         author: initialData.author || '',
-        date: initialData.date || new Date().toISOString().split('T')[0],
+        date: formatDateTimeForInput(initialData.date),
       });
       setIsEditing(false);
     }
@@ -133,7 +150,7 @@ const Memo = ({ initialData = {}, onDelete, onUpdate }) => {
                 disabled={isLoading}
               />
               <input
-                type="date"
+                type="datetime-local"
                 value={memo.date}
                 onChange={(e) => setMemo({ ...memo, date: e.target.value })}
                 className="memo-date-input"
@@ -184,7 +201,27 @@ const Memo = ({ initialData = {}, onDelete, onUpdate }) => {
               <h2 className="memo-title">{memo.title}</h2>
               <div className="memo-meta">
                 {memo.author && <span className="memo-author">작성자: {memo.author}</span>}
-                {memo.date && <span className="memo-date">작성일: {memo.date}</span>}
+                {memo.date && (
+                  <span className="memo-date">
+                    작성일: {
+                      (() => {
+                        try {
+                          return new Date(memo.date).toLocaleString('ko-KR', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            second: '2-digit'
+                          });
+                        } catch (e) {
+                          console.error('날짜 형식 변환 오류:', e);
+                          return memo.date;
+                        }
+                      })()
+                    }
+                  </span>
+                )}
               </div>
             </div>
             <div className="memo-content">{memo.content}</div>

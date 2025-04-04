@@ -147,7 +147,14 @@ const mockService = {
       throw new Error(`ID ${memoId}인 메모를 찾을 수 없습니다.`);
     }
     
-    return memo.comments || [];
+    // 댓글 데이터 형식 일관되게 변환
+    return (memo.comments || []).map(comment => ({
+      id: comment.id,
+      text: comment.content,
+      content: comment.content,
+      author: comment.author || '익명',
+      date: comment.updatedAt || comment.createdAt
+    }));
   },
 
   // 댓글 추가
@@ -160,20 +167,22 @@ const mockService = {
       throw new Error(`ID ${memoId}인 메모를 찾을 수 없습니다.`);
     }
 
+    const currentDateTime = new Date().toISOString();
     const newComment = {
       id: Date.now(),
       content: commentData.text,
       author: commentData.author || '익명',
-      createdAt: new Date().toISOString().split('T')[0]
+      createdAt: currentDateTime
     };
 
     memos[memoIndex].comments = [...(memos[memoIndex].comments || []), newComment];
     saveMemos(memos);
     
-    // 클라이언트 측 데이터 구조에 맞게 변환
+    // 클라이언트 측 데이터 구조에 맞게 일관성 있게 변환
     return {
       id: newComment.id,
       text: newComment.content,
+      content: newComment.content,
       author: newComment.author,
       date: newComment.createdAt
     };

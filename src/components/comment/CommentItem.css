@@ -3,6 +3,9 @@
   border-radius: 10px;
   padding: 1rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  width: 100%;
+  box-sizing: border-box;
+  overflow-wrap: break-word;
 }
 
 .comment-header {
@@ -64,10 +67,11 @@
 
 .comment-text {
   font-size: 0.95rem;
-  color: #555;
+  color: #333;
   line-height: 1.5;
   white-space: pre-line;
   word-break: break-word;
+  margin-top: 0.5rem;
 }
 
 /* 댓글 편집 폼 */
@@ -75,6 +79,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+  width: 100%;
 }
 
 .comment-edit-input {
@@ -85,6 +90,15 @@
   width: 100%;
   min-height: 80px;
   resize: vertical;
+  box-sizing: border-box;
+  color: #333;
+  font-family: inherit;
+}
+
+.comment-edit-input:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
 }
 
 .comment-edit-actions {
@@ -111,6 +125,11 @@
   background-color: #27ae60;
 }
 
+.save-comment-button:disabled {
+  background-color: #a5e8b8;
+  cursor: not-allowed;
+}
+
 .cancel-comment-button {
   background-color: #e74c3c;
   color: white;
@@ -118,4 +137,9 @@
 
 .cancel-comment-button:hover {
   background-color: #c0392b;
+}
+
+.cancel-comment-button:disabled {
+  background-color: #f5a99d;
+  cursor: not-allowed;
 }

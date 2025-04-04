@@ -3,10 +3,14 @@
   padding: 1rem;
   border-radius: 10px;
   margin-bottom: 1.5rem;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .form-group {
   margin-bottom: 1rem;
+  width: 100%;
 }
 
 .form-group label {
@@ -17,19 +21,36 @@
   font-weight: 500;
 }
 
-.form-group input,
-.form-group textarea {
+.form-input,
+.form-textarea {
   width: 100%;
   padding: 0.75rem;
   border: 1px solid #ddd;
   border-radius: 8px;
   font-size: 0.95rem;
   background-color: white;
+  box-sizing: border-box;
+  color: #333; /* 글자 색상 명시 */
 }
 
-.form-group textarea {
+.form-textarea {
   min-height: 100px;
   resize: vertical;
+  font-family: inherit; /* 폰트 패밀리 상속 */
+}
+
+/* 포커스 상태에서의 스타일 추가 */
+.form-input:focus,
+.form-textarea:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+/* 플레이스홀더 스타일 */
+.form-input::placeholder,
+.form-textarea::placeholder {
+  color: #aaa;
 }
 
 .submit-button {
@@ -46,4 +67,10 @@
 
 .submit-button:hover {
   background-color: #2980b9;
+}
+
+/* 버튼 disabled 상태 스타일 */
+.submit-button:disabled {
+  background-color: #a1c5e2;
+  cursor: not-allowed;
 }

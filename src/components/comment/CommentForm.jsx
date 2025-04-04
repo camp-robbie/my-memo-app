@@ -34,6 +34,7 @@ const CommentForm = ({ onSubmit, isLoading }) => {
           onChange={(e) => setCommenterName(e.target.value)}
           required
           disabled={isLoading}
+          className="form-input"
         />
       </div>
       
@@ -46,6 +47,7 @@ const CommentForm = ({ onSubmit, isLoading }) => {
           onChange={(e) => setNewComment(e.target.value)}
           required
           disabled={isLoading}
+          className="form-textarea"
         />
       </div>
       
