@@ -29,7 +29,15 @@ function App() {
 
   // 새 메모 생성
   const addNewMemo = () => {
-    const newMemo = { id: Date.now(), temporary: true };
+    // 임시 ID는 문자열로 생성하여 서버에서 부여하는 ID와 충돌 방지
+    const tempId = 'temp-' + Date.now();
+    const newMemo = { 
+      id: tempId, 
+      temporary: true,
+      title: '',
+      content: '',
+      author: ''
+    };
     setMemos([...memos, newMemo]);
   };
 

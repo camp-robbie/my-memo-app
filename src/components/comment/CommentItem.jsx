@@ -36,12 +36,17 @@ const CommentItem = ({ comment, onUpdate, onDelete, isLoading }) => {
     if (!dateString) return '날짜 정보 없음';
     
     try {
-      return new Date(dateString).toLocaleString('ko-KR', {
+      // 날짜 문자열을 한국 시간대(UTC+9)로 변환하여 표시
+      const date = new Date(dateString);
+      // 시간대 보정 (서버 시간을 한국 시간으로 표시)
+      const koreaTime = new Date(date.getTime() + 9 * 60 * 60 * 1000);
+      return koreaTime.toLocaleString('ko-KR', {
         year: 'numeric',
         month: 'long',
         day: 'numeric',
         hour: '2-digit',
-        minute: '2-digit'
+        minute: '2-digit',
+        hour12: true // 12시간제 사용 (오전/오후 표시)
       });
     } catch (e) {
       console.error('날짜 변환 오류:', e);

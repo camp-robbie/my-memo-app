@@ -8,16 +8,24 @@ const Memo = ({ initialData = {}, onDelete, onUpdate }) => {
   const formatDateTimeForInput = (dateString) => {
     if (!dateString) {
       const now = new Date();
-      return now.toISOString().slice(0, 16); // YYYY-MM-DDTHH:MM 형식
+      return now.toISOString().slice(0, 16);
     }
     
-    // 이미 날짜 문자열이 있는 경우
     try {
       const date = new Date(dateString);
-      return date.toISOString().slice(0, 16);
+      
+      // 서버 시간을 그대로 유지하기 위해 시간대 조정 없이 반환
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      const hours = String(date.getHours()).padStart(2, '0');
+      const minutes = String(date.getMinutes()).padStart(2, '0');
+      
+      return `${year}-${month}-${day}T${hours}:${minutes}`;
     } catch (error) {
-      // 날짜 변환 오류 시 현재 시간 반환
-      return new Date().toISOString().slice(0, 16);
+      console.error('날짜 변환 오류:', error);
+      const now = new Date();
+      return now.toISOString().slice(0, 16);
     }
   };
 
@@ -66,14 +74,20 @@ const Memo = ({ initialData = {}, onDelete, onUpdate }) => {
 
     setIsLoading(true);
     try {
-      if (!initialData.id) {
-        // 새 메모 생성
+      // 임시 ID이거나 ID가 없는 경우 (새 메모 생성)
+      if (!initialData.id || String(initialData.id).startsWith('temp-') || initialData.temporary) {
+        console.log('새 메모 생성 요청:', memo);
         const newMemo = await apiService.createMemo(memo);
+        console.log('생성된 메모:', newMemo);
         if (onUpdate) {
-          onUpdate(newMemo);
+          onUpdate({
+            ...newMemo,
+            id: newMemo.id // 서버에서 생성된 ID로 업데이트
+          });
         }
       } else {
         // 기존 메모 수정
+        console.log('메모 수정 요청:', initialData.id, memo);
         const updatedMemo = await apiService.updateMemo(initialData.id, memo);
         if (onUpdate) {
           onUpdate({ ...initialData, ...updatedMemo });
@@ -90,9 +104,11 @@ const Memo = ({ initialData = {}, onDelete, onUpdate }) => {
 
   // 취소 버튼 기능 구현
   const handleCancelEdit = () => {
-    if (!initialData.title) {
-      // 새 메모인 경우(제목이 없는 경우) - 메모 삭제
-      onDelete(initialData.id);
+    // 임시 ID이거나 제목이 없는 경우 메모 삭제 (새 메모)
+    if (String(initialData.id).startsWith('temp-') || initialData.temporary || !initialData.title) {
+      if (onDelete) {
+        onDelete(initialData.id);
+      }
     } else {
       // 기존 메모인 경우 - 편집을 취소하고 원래 상태로 복원
       setMemo({
@@ -106,6 +122,14 @@ const Memo = ({ initialData = {}, onDelete, onUpdate }) => {
   };
 
   const handleDeleteMemo = async () => {
+    // 임시 메모인 경우 API 호출 없이 삭제
+    if (String(initialData.id).startsWith('temp-') || initialData.temporary) {
+      if (onDelete) {
+        onDelete(initialData.id);
+      }
+      return;
+    }
+    
     if (!window.confirm('이 메모를 삭제하시겠습니까?')) {
       return;
     }
@@ -206,13 +230,17 @@ const Memo = ({ initialData = {}, onDelete, onUpdate }) => {
                     작성일: {
                       (() => {
                         try {
-                          return new Date(memo.date).toLocaleString('ko-KR', {
+                          const date = new Date(memo.date);
+                          
+                          // 서버 시간을 그대로 표시
+                          return date.toLocaleString('ko-KR', {
                             year: 'numeric',
                             month: 'long',
                             day: 'numeric',
                             hour: '2-digit',
                             minute: '2-digit',
-                            second: '2-digit'
+                            second: '2-digit',
+                            hour12: false // 24시간제
                           });
                         } catch (e) {
                           console.error('날짜 형식 변환 오류:', e);

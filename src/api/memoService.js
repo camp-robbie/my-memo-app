@@ -79,12 +79,30 @@ const memoService = {
   // 새 메모 생성
   createMemo: async (memoData) => {
     try {
+      console.log('메모 생성 API 요청:', memoData);
+      
+      // 서버에 보낼 날짜를 한국 시간대로 변환
+      let updatedAt = memoData.date;
+      if (updatedAt) {
+        // 이미 날짜 문자열이 있는 경우 한국 시간 형식으로 변환
+        try {
+          const date = new Date(updatedAt);
+          updatedAt = new Date(date.getTime()).toISOString();
+        } catch (e) {
+          console.error('날짜 변환 오류:', e);
+          updatedAt = new Date().toISOString();
+        }
+      } else {
+        updatedAt = new Date().toISOString();
+      }
+      
       const response = await api.post('/memos', {
         title: memoData.title,
         content: memoData.content,
         author: memoData.author,
-        updatedAt: memoData.date
+        updatedAt: updatedAt
       });
+      console.log('메모 생성 API 응답:', response);
       return response;
     } catch (error) {
       console.error('메모 생성 중 오류가 발생했습니다:', error);
@@ -95,11 +113,26 @@ const memoService = {
   // 메모 수정
   updateMemo: async (id, updatedData) => {
     try {
+      // 서버에 보낼 날짜를 한국 시간대로 변환
+      let updatedAt = updatedData.date;
+      if (updatedAt) {
+        // 이미 날짜 문자열이 있는 경우 한국 시간 형식으로 변환
+        try {
+          const date = new Date(updatedAt);
+          updatedAt = new Date(date.getTime()).toISOString();
+        } catch (e) {
+          console.error('날짜 변환 오류:', e);
+          updatedAt = new Date().toISOString();
+        }
+      } else {
+        updatedAt = new Date().toISOString();
+      }
+      
       const response = await api.put(`/memos/${id}`, {
         title: updatedData.title,
         content: updatedData.content,
         author: updatedData.author, // 작성자 정보도 포함
-        updatedAt: updatedData.date // 날짜와 시간 정보 포함
+        updatedAt: updatedAt // 날짜와 시간 정보 포함
       });
       return response;
     } catch (error) {
@@ -137,6 +170,7 @@ const memoService = {
   addComment: async (memoId, commentData) => {
     try {
       console.log('댓글 추가 요청 데이터:', commentData);
+      // 현재 시간을 ISO 문자열로 변환 (UTC)
       const currentDateTime = new Date().toISOString();
       
       // 서버에 전송할 데이터 형식 맞추기
