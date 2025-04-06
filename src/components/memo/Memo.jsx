@@ -7,14 +7,22 @@ const Memo = ({ initialData = {}, onDelete, onUpdate, isLoggedIn = false }) => {
   // 현재 날짜와 시간을 ISO 형식으로 포맷팅하는 함수
   const formatDateTimeForInput = (dateString) => {
     if (!dateString) {
+      // 새 메모 생성 시 현재 시간 (서버에서 KST로 처리됨)
       const now = new Date();
-      return now.toISOString().slice(0, 16);
+      
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, '0');
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      
+      return `${year}-${month}-${day}T${hours}:${minutes}`;
     }
     
     try {
+      // 기존 날짜 사용 (이미 KST로 저장되어 있음)
       const date = new Date(dateString);
       
-      // 서버 시간을 그대로 유지하기 위해 시간대 조정 없이 반환
       const year = date.getFullYear();
       const month = String(date.getMonth() + 1).padStart(2, '0');
       const day = String(date.getDate()).padStart(2, '0');
@@ -24,8 +32,16 @@ const Memo = ({ initialData = {}, onDelete, onUpdate, isLoggedIn = false }) => {
       return `${year}-${month}-${day}T${hours}:${minutes}`;
     } catch (error) {
       console.error('날짜 변환 오류:', error);
+      // 오류 시 현재 시간 반환
       const now = new Date();
-      return now.toISOString().slice(0, 16);
+      
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, '0');
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      
+      return `${year}-${month}-${day}T${hours}:${minutes}`;
     }
   };
 
@@ -187,16 +203,18 @@ const Memo = ({ initialData = {}, onDelete, onUpdate, isLoggedIn = false }) => {
                 type="text"
                 placeholder="작성자"
                 value={memo.author}
-                onChange={(e) => setMemo({ ...memo, author: e.target.value })}
+                readOnly
                 className="memo-author-input"
                 disabled={isLoading}
+                style={{ backgroundColor: '#f5f5f5', cursor: 'not-allowed' }}
               />
               <input
                 type="datetime-local"
                 value={memo.date}
-                onChange={(e) => setMemo({ ...memo, date: e.target.value })}
+                readOnly
                 className="memo-date-input"
                 disabled={isLoading}
+                style={{ backgroundColor: '#f5f5f5', cursor: 'not-allowed' }}
               />
             </div>
             <textarea

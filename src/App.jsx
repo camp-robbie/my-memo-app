@@ -46,7 +46,8 @@ function App() {
       temporary: true,
       title: '',
       content: '',
-      author: ''
+      author: '',
+      date: new Date().toISOString() // 현재 시간으로 설정 (서버에서 KST로 처리)
     };
     setMemos([...memos, newMemo]);
   };

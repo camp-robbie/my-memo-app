@@ -15,14 +15,16 @@ const MemoEditForm = ({ memo, onChange, onSave, onCancel }) => {
           type="text"
           placeholder="작성자"
           value={memo.author}
-          onChange={(e) => onChange({ ...memo, author: e.target.value })}
+          readOnly
           className="memo-author-input"
+          style={{ backgroundColor: '#f5f5f5', cursor: 'not-allowed' }}
         />
         <input
           type="date"
           value={memo.date}
-          onChange={(e) => onChange({ ...memo, date: e.target.value })}
+          readOnly
           className="memo-date-input"
+          style={{ backgroundColor: '#f5f5f5', cursor: 'not-allowed' }}
         />
       </div>
       <textarea
