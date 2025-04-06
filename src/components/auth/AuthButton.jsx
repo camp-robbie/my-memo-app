@@ -30,11 +30,10 @@ const AuthButton = () => {
     <div className="auth-button-container">
       {isAuthenticated ? (
         <>
-          <button className="auth-button user-button" onClick={handleProfileClick}>
+          <button className="auth-button profile-icon-button" onClick={handleProfileClick} title={currentUser?.email || '사용자'}>
             <span className="user-avatar-small">
               {currentUser?.email?.charAt(0).toUpperCase() || '?'}
             </span>
-            <span className="auth-button-text">내 계정</span>
           </button>
           
           <Modal isOpen={showProfileModal} onClose={closeProfileModal}>

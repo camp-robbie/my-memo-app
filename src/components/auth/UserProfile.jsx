@@ -99,10 +99,27 @@ const UserProfile = ({ onClose }) => {
     }
   };
 
+  // 가입일 포맷팅
+  const formatDate = (dateString) => {
+    if (!dateString) return '정보 없음';
+    
+    try {
+      const date = new Date(dateString);
+      return new Intl.DateTimeFormat('ko-KR', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      }).format(date);
+    } catch (e) {
+      console.error('날짜 형식 변환 오류:', e);
+      return '정보 없음';
+    }
+  };
+
   return (
     <div className="user-profile-container">
       <div className="profile-header">
-        <h2>내 계정</h2>
+        <h2>사용자 정보</h2>
         {onClose && (
           <button onClick={onClose} className="close-button" aria-label="닫기">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -142,8 +159,15 @@ const UserProfile = ({ onClose }) => {
                 {currentUser?.email?.charAt(0).toUpperCase() || '?'}
               </div>
               <div className="user-details">
-                <h3>{currentUser?.email}</h3>
-                <p className="user-since">가입일: {new Date(currentUser?.createdAt || Date.now()).toLocaleDateString()}</p>
+                <div className="email-container">
+                  <h3 className="user-email-label">이메일</h3>
+                  <div className="user-email">{currentUser?.email || '정보 없음'}</div>
+                </div>
+                
+                <div className="joined-container">
+                  <h3 className="user-joined-label">가입일</h3>
+                  <div className="user-joined">{formatDate(currentUser?.createdAt)}</div>
+                </div>
               </div>
             </div>
             
