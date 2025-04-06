@@ -19,7 +19,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  flex: 1;
+  flex: 2;
 }
 
 .theme-toggle-wrapper {
@@ -27,6 +27,14 @@
   justify-content: center;
   align-items: center;
   flex: 1;
+}
+
+.action-buttons-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 2;
+  justify-content: flex-end;
 }
 
 .app-header h1 {
@@ -63,11 +71,8 @@
   font-weight: 500;
   display: flex;
   align-items: center;
-  flex-shrink: 0;
   transition: background-color 0.3s, transform 0.2s;
-  flex: 1;
-  justify-content: center;
-  max-width: 110px;
+  white-space: nowrap;
 }
 
 .new-memo-button:hover {
@@ -179,11 +184,14 @@
     width: 100%;
   }
   
-  .new-memo-button {
+  .action-buttons-wrapper {
     width: 100%;
-    max-width: none;
+    justify-content: center;
+  }
+  
+  .new-memo-button {
+    padding: 0.5rem 1rem;
     font-size: 0.9rem;
-    padding: 0.7rem 0;
   }
   
   .no-memos {
@@ -223,5 +231,15 @@
   .retry-button {
     font-size: 0.85rem;
     padding: 0.4rem 0.8rem;
+  }
+  
+  .new-memo-button {
+    padding: 0.5rem 0.8rem;
+    font-size: 0.85rem;
+  }
+  
+  .action-buttons-wrapper {
+    flex-direction: column;
+    gap: 0.5rem;
   }
 }

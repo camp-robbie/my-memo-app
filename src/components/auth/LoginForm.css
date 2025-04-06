@@ -1,0 +1,159 @@
+.login-form-container {
+  background-color: var(--color-bg-card);
+  border-radius: 12px;
+  box-shadow: 0 4px 15px var(--color-shadow);
+  padding: 1.5rem;
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.login-form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.login-form-header h2 {
+  font-size: 1.5rem;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.close-button:hover {
+  background-color: var(--color-bg-hover);
+  color: var(--color-text);
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  margin-bottom: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  font-size: 0.9rem;
+  color: var(--color-text-light);
+  font-weight: 500;
+}
+
+.form-group input {
+  padding: 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  font-size: 1rem;
+  background-color: var(--color-bg-card);
+  color: var(--color-text);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+.submit-button {
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  padding: 0.7rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-top: 0.5rem;
+  width: 80%;
+  align-self: center;
+}
+
+.submit-button:hover {
+  background-color: var(--color-primary-dark);
+}
+
+.submit-button:disabled {
+  background-color: var(--color-bg-secondary);
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+}
+
+.auth-mode-toggle {
+  text-align: center;
+  border-top: 1px solid var(--color-border);
+  padding-top: 1rem;
+}
+
+.toggle-auth-mode-button {
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  font-size: 0.9rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  transition: color 0.2s;
+}
+
+.toggle-auth-mode-button:hover {
+  color: var(--color-primary-dark);
+  text-decoration: underline;
+}
+
+.toggle-auth-mode-button:disabled {
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+  text-decoration: none;
+}
+
+.auth-error-message {
+  background-color: rgba(231, 76, 60, 0.1);
+  border-left: 3px solid var(--color-danger);
+  color: var(--color-danger);
+  padding: 0.8rem;
+  margin-bottom: 1rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+/* 모바일 반응형 스타일 */
+@media (max-width: 480px) {
+  .login-form-container {
+    padding: 1.2rem;
+    width: 95%;
+  }
+  
+  .login-form-header h2 {
+    font-size: 1.3rem;
+  }
+  
+  .form-group input {
+    padding: 0.7rem;
+    font-size: 0.95rem;
+  }
+  
+  .submit-button {
+    padding: 0.6rem;
+    font-size: 0.9rem;
+  }
+}

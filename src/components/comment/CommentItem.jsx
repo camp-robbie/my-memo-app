@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './CommentItem.css';
 
-const CommentItem = ({ comment, onUpdate, onDelete, isLoading }) => {
+const CommentItem = ({ comment, onUpdate, onDelete, isLoading, isLoggedIn = false }) => {
   const [isEditing, setIsEditing] = useState(false);
   
   // comment가 null인 경우를 처리
@@ -13,6 +13,22 @@ const CommentItem = ({ comment, onUpdate, onDelete, isLoading }) => {
   // 댓글 내용 가져오기 (content 또는 text 필드 사용)
   const commentText = ((comment.content || comment.text) || '').toString();
   const [editedText, setEditedText] = useState(commentText);
+
+  const handleEditClick = () => {
+    if (!isLoggedIn) {
+      alert('댓글을 수정하려면 로그인이 필요합니다.');
+      return;
+    }
+    setIsEditing(true);
+  };
+  
+  const handleDeleteClick = () => {
+    if (!isLoggedIn) {
+      alert('댓글을 삭제하려면 로그인이 필요합니다.');
+      return;
+    }
+    onDelete(comment.id);
+  };
 
   const handleSaveEdit = () => {
     if (!editedText.trim()) return;
@@ -92,7 +108,7 @@ const CommentItem = ({ comment, onUpdate, onDelete, isLoading }) => {
             </div>
             <div className="comment-actions">
               <button 
-                onClick={() => setIsEditing(true)} 
+                onClick={handleEditClick} 
                 className="comment-edit-icon" 
                 title="댓글 수정"
                 disabled={isLoading}
@@ -102,7 +118,7 @@ const CommentItem = ({ comment, onUpdate, onDelete, isLoading }) => {
                 </svg>
               </button>
               <button 
-                onClick={() => onDelete(comment.id)} 
+                onClick={handleDeleteClick} 
                 className="comment-delete-icon" 
                 title="댓글 삭제"
                 disabled={isLoading}

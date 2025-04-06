@@ -3,7 +3,7 @@ import Comments from '../comment/Comments';
 import apiService from '../../api';
 import './Memo.css';
 
-const Memo = ({ initialData = {}, onDelete, onUpdate }) => {
+const Memo = ({ initialData = {}, onDelete, onUpdate, isLoggedIn = false }) => {
   // 현재 날짜와 시간을 ISO 형식으로 포맷팅하는 함수
   const formatDateTimeForInput = (dateString) => {
     if (!dateString) {
@@ -67,6 +67,11 @@ const Memo = ({ initialData = {}, onDelete, onUpdate }) => {
   }, [initialData.id, initialData.title]);
 
   const handleSaveMemo = async () => {
+    if (!isLoggedIn) {
+      alert('메모를 저장하려면 로그인이 필요합니다.');
+      return;
+    }
+    
     if (!memo.title) {
       alert('제목은 필수 입력 항목입니다.');
       return;
@@ -122,6 +127,11 @@ const Memo = ({ initialData = {}, onDelete, onUpdate }) => {
   };
 
   const handleDeleteMemo = async () => {
+    if (!isLoggedIn) {
+      alert('메모를 삭제하려면 로그인이 필요합니다.');
+      return;
+    }
+    
     // 임시 메모인 경우 API 호출 없이 삭제
     if (String(initialData.id).startsWith('temp-') || initialData.temporary) {
       if (onDelete) {
@@ -146,6 +156,14 @@ const Memo = ({ initialData = {}, onDelete, onUpdate }) => {
         setIsLoading(false);
       }
     }
+  };
+
+  const handleEditClick = () => {
+    if (!isLoggedIn) {
+      alert('메모를 수정하려면 로그인이 필요합니다.');
+      return;
+    }
+    setIsEditing(true);
   };
 
   return (
@@ -212,7 +230,7 @@ const Memo = ({ initialData = {}, onDelete, onUpdate }) => {
               onClick={handleDeleteMemo} 
               className="memo-delete-icon" 
               title="메모 삭제"
-              disabled={isLoading}
+              disabled={isLoading || !isLoggedIn}
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <polyline points="3 6 5 6 21 6"></polyline>
@@ -255,7 +273,7 @@ const Memo = ({ initialData = {}, onDelete, onUpdate }) => {
             <div className="memo-content">{memo.content}</div>
             <div className="memo-actions">
               <button 
-                onClick={() => setIsEditing(true)} 
+                onClick={handleEditClick} 
                 className="edit-button"
                 disabled={isLoading}
               >
@@ -275,6 +293,7 @@ const Memo = ({ initialData = {}, onDelete, onUpdate }) => {
               <Comments 
                 memoId={initialData.id} 
                 initialComments={initialData.comments || []} 
+                isLoggedIn={isLoggedIn}
               />
             )}
           </div>

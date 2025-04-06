@@ -1,13 +1,16 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import './App.css'
 import Memo from './components/memo/Memo'
 import ThemeToggle from './components/ThemeToggle'
+import AuthButton from './components/auth/AuthButton'
+import { AuthContext } from './context/AuthContext'
 import apiService from './api'
 
 function App() {
   const [memos, setMemos] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { isAuthenticated } = useContext(AuthContext);
 
   // 초기 데이터 로딩 (메모 목록 가져오기)
   useEffect(() => {
@@ -26,10 +29,16 @@ function App() {
     };
 
     loadMemos();
-  }, []);
+  }, [isAuthenticated]); // 인증 상태가 변경되면 메모 목록 갱신
 
   // 새 메모 생성
   const addNewMemo = () => {
+    // 로그인되지 않은 경우 처리
+    if (!isAuthenticated) {
+      alert('메모를 작성하려면 로그인이 필요합니다.');
+      return;
+    }
+    
     // 임시 ID는 문자열로 생성하여 서버에서 부여하는 ID와 충돌 방지
     const tempId = 'temp-' + Date.now();
     const newMemo = { 
@@ -90,9 +99,12 @@ function App() {
           <ThemeToggle />
         </div>
         
-        <button onClick={addNewMemo} className="new-memo-button" disabled={isLoading}>
-          새 메모
-        </button>
+        <div className="action-buttons-wrapper">
+          <button onClick={addNewMemo} className="new-memo-button" disabled={isLoading}>
+            새 메모
+          </button>
+          <AuthButton />
+        </div>
       </header>
       
       {error && (
@@ -120,6 +132,7 @@ function App() {
                 initialData={memo} 
                 onDelete={handleDeleteMemo}
                 onUpdate={handleUpdateMemo}
+                isLoggedIn={isAuthenticated}
               />
             ))
           )}

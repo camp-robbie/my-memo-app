@@ -4,7 +4,7 @@ import CommentForm from './CommentForm';
 import apiService from '../../api';
 import './Comments.css';
 
-const Comments = ({ memoId, initialComments = [] }) => {
+const Comments = ({ memoId, initialComments = [], isLoggedIn = false }) => {
   // API 응답의 구조에 맞게 초기 댓글 데이터 변환
   const formatComments = (commentList) => {
     if (!Array.isArray(commentList)) {
@@ -63,6 +63,12 @@ const Comments = ({ memoId, initialComments = [] }) => {
   }, [memoId]);
 
   const handleAddComment = async (newComment) => {
+    // 로그인 확인
+    if (!isLoggedIn) {
+      alert('댓글을 작성하려면 로그인이 필요합니다.');
+      return;
+    }
+    
     if (!newComment.text || !newComment.author) {
       console.error('댓글 내용 또는 작성자가 누락되었습니다');
       return;
@@ -91,6 +97,12 @@ const Comments = ({ memoId, initialComments = [] }) => {
   };
 
   const handleUpdateComment = async (updatedComment) => {
+    // 로그인 확인
+    if (!isLoggedIn) {
+      alert('댓글을 수정하려면 로그인이 필요합니다.');
+      return;
+    }
+    
     setIsLoading(true);
     try {
       const response = await apiService.updateComment(updatedComment.id, updatedComment.text || updatedComment.content);
@@ -117,6 +129,12 @@ const Comments = ({ memoId, initialComments = [] }) => {
   };
 
   const handleDeleteComment = async (commentId) => {
+    // 로그인 확인
+    if (!isLoggedIn) {
+      alert('댓글을 삭제하려면 로그인이 필요합니다.');
+      return;
+    }
+    
     if (!window.confirm('이 댓글을 삭제하시겠습니까?')) {
       return;
     }
@@ -134,12 +152,21 @@ const Comments = ({ memoId, initialComments = [] }) => {
     }
   };
 
+  // 댓글 작성 폼 토글
+  const toggleCommentForm = () => {
+    if (!isLoggedIn) {
+      alert('댓글을 작성하려면 로그인이 필요합니다.');
+      return;
+    }
+    setShowCommentForm(!showCommentForm);
+  };
+
   return (
     <div className="comments-section">
       <div className="comments-header">
         <h3>댓글 ({comments.length})</h3>
         <button 
-          onClick={() => setShowCommentForm(!showCommentForm)} 
+          onClick={toggleCommentForm} 
           className="add-comment-button"
           disabled={isLoading}
         >
@@ -164,6 +191,7 @@ const Comments = ({ memoId, initialComments = [] }) => {
               onUpdate={handleUpdateComment}
               onDelete={handleDeleteComment}
               isLoading={isLoading}
+              isLoggedIn={isLoggedIn}
             />
           ))
         )}

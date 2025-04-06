@@ -1,0 +1,84 @@
+.auth-button-container {
+  display: flex;
+  align-items: center;
+}
+
+.auth-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  border: none;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.login-button {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+.login-button:hover {
+  background-color: var(--color-primary-dark);
+  transform: translateY(-2px);
+}
+
+.login-button:active {
+  transform: translateY(0);
+}
+
+.user-button {
+  background-color: var(--color-bg-secondary);
+  color: var(--color-text);
+}
+
+.user-button:hover {
+  background-color: var(--color-bg-hover);
+  transform: translateY(-2px);
+}
+
+.user-button:active {
+  transform: translateY(0);
+}
+
+.user-avatar-small {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: var(--color-primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 0.85rem;
+}
+
+/* 모바일 반응형 스타일 */
+@media (max-width: 768px) {
+  .auth-button {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.9rem;
+  }
+  
+  .auth-button-text {
+    display: none;
+  }
+  
+  .login-button, .user-button {
+    padding: 0.4rem;
+  }
+  
+  .user-avatar-small {
+    margin: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .auth-button {
+    padding: 0.4rem;
+  }
+}
