@@ -34,10 +34,10 @@ function App() {
   // 새 메모 생성
   const addNewMemo = () => {
     // 로그인되지 않은 경우 처리
-    if (!isAuthenticated) {
-      alert('메모를 작성하려면 로그인이 필요합니다.');
-      return;
-    }
+    // if (!isAuthenticated) {
+    //   alert('메모를 작성하려면 로그인이 필요합니다.');
+    //   return;
+    // }
     
     // 임시 ID는 문자열로 생성하여 서버에서 부여하는 ID와 충돌 방지
     const tempId = 'temp-' + Date.now();

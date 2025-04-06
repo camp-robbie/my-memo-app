@@ -18,7 +18,7 @@ export const AuthProvider = ({ children }) => {
         setLoading(true);
         setError(null);
 
-        // 토큰이 있는 경우에만 사용자 정보 요청
+        // 인증 상태가 있는 경우에만 사용자 정보 요청
         if (authService.isAuthenticated()) {
           try {
             const userData = await authService.getCurrentUser();
@@ -26,7 +26,8 @@ export const AuthProvider = ({ children }) => {
             setIsAuthenticated(true);
           } catch (error) {
             console.error('사용자 정보 로드 중 오류:', error);
-            authService.logout(); // 토큰이 유효하지 않으면 로그아웃
+            // 세션이 유효하지 않으면 로그아웃
+            await authService.logout();
             setIsAuthenticated(false);
           }
         } else {
@@ -51,7 +52,7 @@ export const AuthProvider = ({ children }) => {
       const response = await authService.login(email, password);
       
       // 로그인 성공 시 사용자 정보 갱신
-      if (response && response.token) {
+      if (response && response.success) {
         const userData = await authService.getCurrentUser();
         setCurrentUser(userData);
         setIsAuthenticated(true);
@@ -68,10 +69,14 @@ export const AuthProvider = ({ children }) => {
   };
 
   // 로그아웃 함수
-  const logout = () => {
-    authService.logout();
-    setCurrentUser(null);
-    setIsAuthenticated(false);
+  const logout = async () => {
+    try {
+      await authService.logout();
+      setCurrentUser(null);
+      setIsAuthenticated(false);
+    } catch (error) {
+      console.error('로그아웃 중 오류:', error);
+    }
   };
 
   // 회원가입 함수

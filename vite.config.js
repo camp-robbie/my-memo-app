@@ -8,7 +8,7 @@ export default defineConfig({
     proxy: {
       // API 요청에 대한 프록시 설정
       '/api': {
-        target: 'http://localhost:8081',
+        target: 'http://localhost:8080',
         changeOrigin: true,
         secure: false,
       }

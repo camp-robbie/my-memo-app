@@ -9,44 +9,17 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-  withCredentials: true,
+  withCredentials: true, // CORS 요청에 쿠키 포함 (세션 쿠키를 위해 필수)
 });
-
-// JWT 토큰 관리
-const AUTH_TOKEN_KEY = 'auth_token';
-
-// 로컬 스토리지에서 토큰 가져오기
-const getToken = () => localStorage.getItem(AUTH_TOKEN_KEY);
-
-// 로컬 스토리지에 토큰 저장
-const setToken = (token) => {
-  if (token) {
-    localStorage.setItem(AUTH_TOKEN_KEY, token);
-  } else {
-    localStorage.removeItem(AUTH_TOKEN_KEY);
-  }
-};
-
-// 요청 인터셉터 설정 (요청 시 토큰 첨부)
-api.interceptors.request.use(
-  (config) => {
-    const token = getToken();
-    if (token) {
-      config.headers['Authorization'] = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
 
 // 응답 인터셉터 설정
 api.interceptors.response.use(
   (response) => response.data,
   (error) => {
-    // 401 Unauthorized 오류 처리 (토큰 만료 등)
+    // 401 Unauthorized 오류 처리 (세션 만료 등)
     if (error.response && error.response.status === 401) {
-      // 토큰 제거 및 로그인 페이지로 리다이렉트
-      setToken(null);
+      // 세션이 만료되었을 때 처리
+      localStorage.removeItem('isAuthenticated');
       // 현재 상태를 로컬 스토리지에 저장하고 로그인 화면으로 이동할 수 있음
       // window.location.href = '/login';
     }
@@ -73,9 +46,9 @@ const authService = {
   login: async (email, password) => {
     try {
       const response = await api.post('/login', { email, password });
-      // JWT 토큰을 로컬 스토리지에 저장
-      if (response && response.token) {
-        setToken(response.token);
+      // 세션 인증 성공 시 로컬 스토리지에 인증 상태 저장
+      if (response && response.success) {
+        localStorage.setItem('isAuthenticated', 'true');
       }
       return response;
     } catch (error) {
@@ -85,8 +58,16 @@ const authService = {
   },
 
   // 로그아웃
-  logout: () => {
-    setToken(null);
+  logout: async () => {
+    try {
+      // 서버에 로그아웃 요청 (세션 삭제)
+      await api.post('/logout');
+    } catch (error) {
+      console.error('로그아웃 중 오류가 발생했습니다:', error);
+    } finally {
+      // 로컬 인증 상태 제거
+      localStorage.removeItem('isAuthenticated');
+    }
   },
 
   // 현재 사용자 정보 조회
@@ -113,7 +94,7 @@ const authService = {
   deleteAccount: async (password) => {
     try {
       await api.delete('/users', { data: { password } });
-      setToken(null);
+      localStorage.removeItem('isAuthenticated');
       return { success: true };
     } catch (error) {
       console.error('계정 삭제 중 오류가 발생했습니다:', error);
@@ -121,13 +102,10 @@ const authService = {
     }
   },
 
-  // 토큰 확인 (로그인 여부 확인)
+  // 인증 상태 확인 (로그인 여부 확인)
   isAuthenticated: () => {
-    return !!getToken();
+    return localStorage.getItem('isAuthenticated') === 'true';
   },
-
-  // 토큰 가져오기
-  getToken,
 };
 
 export default authService;

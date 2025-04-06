@@ -67,10 +67,10 @@ const Memo = ({ initialData = {}, onDelete, onUpdate, isLoggedIn = false }) => {
   }, [initialData.id, initialData.title]);
 
   const handleSaveMemo = async () => {
-    if (!isLoggedIn) {
-      alert('메모를 저장하려면 로그인이 필요합니다.');
-      return;
-    }
+    // if (!isLoggedIn) { // 인증 기능 구현 필요
+    //   alert('메모를 저장하려면 로그인이 필요합니다.');
+    //   return;
+    // }
     
     if (!memo.title) {
       alert('제목은 필수 입력 항목입니다.');
@@ -127,10 +127,10 @@ const Memo = ({ initialData = {}, onDelete, onUpdate, isLoggedIn = false }) => {
   };
 
   const handleDeleteMemo = async () => {
-    if (!isLoggedIn) {
-      alert('메모를 삭제하려면 로그인이 필요합니다.');
-      return;
-    }
+    // if (!isLoggedIn) {
+    //   alert('메모를 삭제하려면 로그인이 필요합니다.');
+    //   return;
+    // }
     
     // 임시 메모인 경우 API 호출 없이 삭제
     if (String(initialData.id).startsWith('temp-') || initialData.temporary) {
@@ -159,10 +159,10 @@ const Memo = ({ initialData = {}, onDelete, onUpdate, isLoggedIn = false }) => {
   };
 
   const handleEditClick = () => {
-    if (!isLoggedIn) {
-      alert('메모를 수정하려면 로그인이 필요합니다.');
-      return;
-    }
+    // if (!isLoggedIn) {
+    //   alert('메모를 수정하려면 로그인이 필요합니다.');
+    //   return;
+    // }
     setIsEditing(true);
   };
 
