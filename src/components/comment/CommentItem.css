@@ -1,8 +1,8 @@
 .comment-item {
-  background-color: #f9f9f9;
+  background-color: var(--color-bg-secondary);
   border-radius: 10px;
   padding: 1rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 4px var(--color-shadow);
   width: 100%;
   box-sizing: border-box;
   overflow-wrap: break-word;
@@ -26,13 +26,13 @@
 
 .comment-author {
   font-weight: 600;
-  color: #444;
+  color: var(--color-text);
   font-size: 0.9rem;
 }
 
 .comment-date {
   font-size: 0.8rem;
-  color: #888;
+  color: var(--color-text-muted);
 }
 
 .comment-actions {
@@ -53,24 +53,24 @@
 }
 
 .comment-edit-icon {
-  color: #3498db;
+  color: var(--color-primary);
 }
 
 .comment-edit-icon:hover {
-  background-color: rgba(52, 152, 219, 0.1);
+  background-color: var(--color-bg-hover);
 }
 
 .comment-delete-icon {
-  color: #e74c3c;
+  color: var(--color-danger);
 }
 
 .comment-delete-icon:hover {
-  background-color: rgba(231, 76, 60, 0.1);
+  background-color: var(--color-bg-hover);
 }
 
 .comment-text {
   font-size: 0.95rem;
-  color: #333;
+  color: var(--color-text);
   line-height: 1.5;
   white-space: pre-line;
   word-break: break-word;
@@ -87,20 +87,21 @@
 
 .comment-edit-input {
   padding: 0.6rem;
-  border: 1px solid #ddd;
+  border: 1px solid var(--color-border);
   border-radius: 8px;
   font-size: 0.95rem;
   width: 100%;
   min-height: 80px;
   resize: vertical;
   box-sizing: border-box;
-  color: #333;
+  color: var(--color-text);
+  background-color: var(--color-bg-card);
   font-family: inherit;
 }
 
 .comment-edit-input:focus {
   outline: none;
-  border-color: #3498db;
+  border-color: var(--color-primary);
   box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
 }
 
@@ -120,30 +121,32 @@
 }
 
 .save-comment-button {
-  background-color: #2ecc71;
+  background-color: var(--color-secondary);
   color: white;
 }
 
 .save-comment-button:hover {
-  background-color: #27ae60;
+  background-color: var(--color-secondary-dark);
 }
 
 .save-comment-button:disabled {
-  background-color: #a5e8b8;
+  background-color: var(--color-bg-secondary);
+  color: var(--color-text-muted);
   cursor: not-allowed;
 }
 
 .cancel-comment-button {
-  background-color: #e74c3c;
+  background-color: var(--color-danger);
   color: white;
 }
 
 .cancel-comment-button:hover {
-  background-color: #c0392b;
+  background-color: var(--color-danger-dark);
 }
 
 .cancel-comment-button:disabled {
-  background-color: #f5a99d;
+  background-color: var(--color-bg-secondary);
+  color: var(--color-text-muted);
   cursor: not-allowed;
 }
 

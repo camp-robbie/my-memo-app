@@ -1,0 +1,25 @@
+.simple-theme-toggle {
+  background-color: var(--color-primary, #3498db);
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.simple-theme-toggle:hover {
+  background-color: var(--color-primary-dark, #2980b9);
+}
+
+@media (max-width: 768px) {
+  .simple-theme-toggle {
+    width: 100%;
+    padding: 10px;
+  }
+}

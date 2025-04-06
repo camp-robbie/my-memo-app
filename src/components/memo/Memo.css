@@ -5,9 +5,9 @@
 }
 
 .memo-card {
-  background-color: #fff;
+  background-color: var(--color-bg-card);
   border-radius: 15px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px var(--color-shadow);
   padding: 1.5rem;
   position: relative;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -17,7 +17,7 @@
 
 .memo-card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 6px 12px var(--color-shadow-dark);
 }
 
 .memo-card.loading {
@@ -30,12 +30,13 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(255, 255, 255, 0.7);
+  background-color: var(--color-bg-card);
+  opacity: 0.8;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 1.1rem;
-  color: #555;
+  color: var(--color-text-light);
   border-radius: 15px;
   z-index: 10;
 }
@@ -47,7 +48,7 @@
   right: 10px;
   background: none;
   border: none;
-  color: #ff5555;
+  color: var(--color-danger);
   cursor: pointer;
   padding: 5px;
   border-radius: 50%;
@@ -60,13 +61,12 @@
 
 .memo-delete-icon:hover {
   opacity: 1;
-  background-color: rgba(255, 85, 85, 0.1);
+  background-color: var(--color-bg-hover);
 }
 
 .memo-delete-icon:disabled {
-  color: #ffaaaa;
-  cursor: not-allowed;
   opacity: 0.5;
+  cursor: not-allowed;
 }
 
 /* 메모 헤더 스타일 */
@@ -77,7 +77,7 @@
 
 .memo-title {
   font-size: 1.4rem;
-  color: #333;
+  color: var(--color-text);
   margin-bottom: 0.5rem;
   word-break: break-word;
 }
@@ -87,7 +87,7 @@
   flex-wrap: wrap;
   gap: 0.75rem;
   font-size: 0.85rem;
-  color: #777;
+  color: var(--color-text-light);
 }
 
 .memo-author, .memo-date {
@@ -98,7 +98,7 @@
 .memo-content {
   font-size: 1rem;
   line-height: 1.6;
-  color: #444;
+  color: var(--color-text);
   margin-bottom: 1.5rem;
   white-space: pre-line;
   word-break: break-word;
@@ -123,12 +123,12 @@
 }
 
 .edit-button {
-  background-color: #3498db;
+  background-color: var(--color-primary);
   color: white;
 }
 
 .edit-button:hover {
-  background-color: #2980b9;
+  background-color: var(--color-primary-dark);
 }
 
 .edit-button:disabled, .comment-toggle-button:disabled {
@@ -137,12 +137,12 @@
 }
 
 .comment-toggle-button {
-  background-color: #f1f1f1;
-  color: #333;
+  background-color: var(--color-bg-secondary);
+  color: var(--color-text);
 }
 
 .comment-toggle-button:hover {
-  background-color: #e1e1e1;
+  background-color: var(--color-bg-hover);
 }
 
 /* 메모 편집 폼 */
@@ -155,11 +155,13 @@
 
 .memo-title-input, .memo-author-input, .memo-date-input, .memo-content-input {
   padding: 0.75rem;
-  border: 1px solid #ddd;
+  border: 1px solid var(--color-border);
   border-radius: 8px;
   font-size: 1rem;
   width: 100%;
   box-sizing: border-box;
+  background-color: var(--color-bg-card);
+  color: var(--color-text);
 }
 
 .memo-content-input {
@@ -203,30 +205,32 @@
 }
 
 .save-button {
-  background-color: #2ecc71;
+  background-color: var(--color-secondary);
   color: white;
 }
 
 .save-button:hover {
-  background-color: #27ae60;
+  background-color: var(--color-secondary-dark);
 }
 
 .save-button:disabled {
-  background-color: #97e3b6;
+  background-color: var(--color-bg-secondary);
+  color: var(--color-text-muted);
   cursor: not-allowed;
 }
 
 .cancel-button {
-  background-color: #e74c3c;
+  background-color: var(--color-danger);
   color: white;
 }
 
 .cancel-button:hover {
-  background-color: #c0392b;
+  background-color: var(--color-danger-dark);
 }
 
 .cancel-button:disabled {
-  background-color: #f1a9a2;
+  background-color: var(--color-bg-secondary);
+  color: var(--color-text-muted);
   cursor: not-allowed;
 }
 

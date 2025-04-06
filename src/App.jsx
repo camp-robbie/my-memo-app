@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import './App.css'
 import Memo from './components/memo/Memo'
-import apiService from './api' // memoService 대신 apiService 사용
+import ThemeToggle from './components/ThemeToggle'
+import apiService from './api'
 
 function App() {
   const [memos, setMemos] = useState([]);
@@ -84,6 +85,11 @@ function App() {
             </button>
           )}
         </div>
+        
+        <div className="theme-toggle-wrapper">
+          <ThemeToggle />
+        </div>
+        
         <button onClick={addNewMemo} className="new-memo-button" disabled={isLoading}>
           새 메모
         </button>

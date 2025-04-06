@@ -1,5 +1,5 @@
 .comment-form {
-  background-color: #f5f5f5;
+  background-color: var(--color-bg-secondary);
   padding: 1rem;
   border-radius: 10px;
   margin-bottom: 1.2rem;
@@ -17,7 +17,7 @@
   display: block;
   margin-bottom: 0.5rem;
   font-size: 0.9rem;
-  color: #555;
+  color: var(--color-text-light);
   font-weight: 500;
 }
 
@@ -25,12 +25,12 @@
 .form-textarea {
   width: 100%;
   padding: 0.75rem;
-  border: 1px solid #ddd;
+  border: 1px solid var(--color-border);
   border-radius: 8px;
   font-size: 0.95rem;
-  background-color: white;
+  background-color: var(--color-bg-card);
   box-sizing: border-box;
-  color: #333;
+  color: var(--color-text);
   font-family: inherit;
 }
 
@@ -43,18 +43,18 @@
 .form-input:focus,
 .form-textarea:focus {
   outline: none;
-  border-color: #3498db;
+  border-color: var(--color-primary);
   box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
 }
 
 /* 플레이스홀더 스타일 */
 .form-input::placeholder,
 .form-textarea::placeholder {
-  color: #aaa;
+  color: var(--color-text-muted);
 }
 
 .submit-button {
-  background-color: #3498db;
+  background-color: var(--color-primary);
   color: white;
   border: none;
   padding: 0.7rem 1.2rem;
@@ -66,12 +66,13 @@
 }
 
 .submit-button:hover {
-  background-color: #2980b9;
+  background-color: var(--color-primary-dark);
 }
 
 /* 버튼 disabled 상태 스타일 */
 .submit-button:disabled {
-  background-color: #a1c5e2;
+  background-color: var(--color-bg-secondary);
+  color: var(--color-text-muted);
   cursor: not-allowed;
 }
 

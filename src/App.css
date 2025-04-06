@@ -12,17 +12,25 @@
   align-items: center;
   margin-bottom: 1.5rem;
   padding-bottom: 1rem;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .header-left {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  flex: 1;
+}
+
+.theme-toggle-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
 }
 
 .app-header h1 {
-  color: #3498db;
+  color: var(--color-primary);
   margin: 0;
   font-size: 1.8rem;
 }
@@ -30,7 +38,7 @@
 .refresh-button {
   background: none;
   border: none;
-  color: #3498db;
+  color: var(--color-primary);
   cursor: pointer;
   padding: 0.5rem;
   border-radius: 50%;
@@ -41,11 +49,11 @@
 }
 
 .refresh-button:hover {
-  background-color: rgba(52, 152, 219, 0.1);
+  background-color: var(--color-bg-hover);
 }
 
 .new-memo-button {
-  background-color: #2ecc71;
+  background-color: var(--color-secondary);
   color: white;
   border: none;
   padding: 0.6rem 1.2rem;
@@ -55,12 +63,15 @@
   font-weight: 500;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  flex-shrink: 0;
   transition: background-color 0.3s, transform 0.2s;
+  flex: 1;
+  justify-content: center;
+  max-width: 110px;
 }
 
 .new-memo-button:hover {
-  background-color: #27ae60;
+  background-color: var(--color-secondary-dark);
   transform: translateY(-2px);
 }
 
@@ -69,7 +80,8 @@
 }
 
 .new-memo-button:disabled {
-  background-color: #a8e6c1;
+  background-color: var(--color-bg-secondary);
+  color: var(--color-text-muted);
   cursor: not-allowed;
   transform: none;
 }
@@ -92,8 +104,8 @@
 .loading-spinner {
   width: 40px;
   height: 40px;
-  border: 4px solid #f3f3f3;
-  border-top: 4px solid #3498db;
+  border: 4px solid var(--color-bg-secondary);
+  border-top: 4px solid var(--color-primary);
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin-bottom: 1rem;
@@ -105,13 +117,13 @@
 }
 
 .error-container {
-  background-color: #ffeeee;
-  border: 1px solid #ffcccc;
+  background-color: rgba(231, 76, 60, 0.1);
+  border: 1px solid var(--color-danger);
   border-radius: 8px;
   padding: 1rem;
   margin-bottom: 1.5rem;
   text-align: center;
-  color: #e74c3c;
+  color: var(--color-danger);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -119,7 +131,7 @@
 }
 
 .retry-button {
-  background-color: #e74c3c;
+  background-color: var(--color-danger);
   color: white;
   border: none;
   padding: 0.5rem 1rem;
@@ -130,15 +142,15 @@
 }
 
 .retry-button:hover {
-  background-color: #c0392b;
+  background-color: var(--color-danger-dark);
 }
 
 .no-memos {
   text-align: center;
   padding: 2rem 1rem;
-  border: 2px dashed #ddd;
+  border: 2px dashed var(--color-border);
   border-radius: 15px;
-  color: #999;
+  color: var(--color-text-muted);
 }
 
 /* 모바일 반응형 스타일 */
@@ -149,7 +161,7 @@
   
   .app-header {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
     gap: 1rem;
     margin-bottom: 1rem;
   }
@@ -160,12 +172,16 @@
   
   .header-left {
     width: 100%;
-    justify-content: space-between;
+    justify-content: center;
+  }
+  
+  .theme-toggle-wrapper {
+    width: 100%;
   }
   
   .new-memo-button {
     width: 100%;
-    justify-content: center;
+    max-width: none;
     font-size: 0.9rem;
     padding: 0.7rem 0;
   }
