@@ -11,6 +11,8 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }
 
 .comments-header h3 {
@@ -28,6 +30,7 @@
   font-size: 0.85rem;
   cursor: pointer;
   transition: background-color 0.2s;
+  white-space: nowrap;
 }
 
 .add-comment-button:hover {
@@ -62,4 +65,57 @@
   color: #666;
   background-color: #f5f5f5;
   border-radius: 5px;
+}
+
+/* 모바일 반응형 스타일 */
+@media (max-width: 768px) {
+  .comments-section {
+    margin-top: 1.2rem;
+    padding-top: 0.8rem;
+  }
+  
+  .comments-header {
+    margin-bottom: 0.8rem;
+  }
+  
+  .comments-header h3 {
+    font-size: 1rem;
+  }
+  
+  .add-comment-button {
+    font-size: 0.8rem;
+    padding: 0.4rem 0.7rem;
+  }
+  
+  .comments-list {
+    gap: 0.8rem;
+  }
+  
+  .no-comments {
+    padding: 0.8rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* 더 작은 화면을 위한 추가 스타일 */
+@media (max-width: 480px) {
+  .comments-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .add-comment-button {
+    width: 100%;
+    text-align: center;
+    margin-top: 0.3rem;
+  }
+  
+  .comments-list {
+    gap: 0.6rem;
+  }
+  
+  .loading-indicator {
+    font-size: 0.85rem;
+    padding: 0.4rem;
+  }
 }
