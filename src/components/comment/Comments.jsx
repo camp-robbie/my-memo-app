@@ -41,6 +41,7 @@ const Comments = ({ memoId, initialComments = [], isLoggedIn = false }) => {
   const [comments, setComments] = useState(formatComments(initialComments));
   const [showCommentForm, setShowCommentForm] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [refreshFlag, setRefreshFlag] = useState(0);
 
   // 댓글 목록 불러오기
   useEffect(() => {
@@ -63,7 +64,12 @@ const Comments = ({ memoId, initialComments = [], isLoggedIn = false }) => {
     };
 
     loadComments();
-  }, [memoId]);
+  }, [memoId, refreshFlag]); // refreshFlag가 변경될 때마다 댓글 다시 불러오기
+
+  // 댓글 목록 새로고침 함수
+  const refreshComments = () => {
+    setRefreshFlag(prev => prev + 1);
+  };
 
   const handleAddComment = async (newComment) => {
     // 로그인 확인
@@ -94,8 +100,8 @@ const Comments = ({ memoId, initialComments = [], isLoggedIn = false }) => {
         throw new Error('서버에서 유효한 댓글을 반환하지 않았습니다');
       }
       
-      // 새 댓글을 상태에 추가
-      setComments(prevComments => [...prevComments, addedComment]);
+      // 댓글 목록 새로고침
+      refreshComments();
       setShowCommentForm(false);
     } catch (error) {
       console.error('댓글 추가 중 오류 발생:', error);
@@ -121,20 +127,9 @@ const Comments = ({ memoId, initialComments = [], isLoggedIn = false }) => {
     setIsLoading(true);
     try {
       const response = await apiService.updateComment(memoId, updatedComment.id, updatedComment.text || updatedComment.content);
-      // 응답 구조가 다양한 경우를 고려하여 처리
-      const updatedContent = response.content || response.text || updatedComment.text || updatedComment.content;
-      const updatedDate = response.updatedAt || response.date || new Date().toISOString();
       
-      const updatedComments = comments.map(comment => 
-        comment.id === updatedComment.id ? {
-          ...comment,
-          text: updatedContent,
-          content: updatedContent,
-          date: updatedDate
-        } : comment
-      );
-      
-      setComments(updatedComments);
+      // 댓글 목록 새로고침
+      refreshComments();
     } catch (error) {
       console.error('댓글 수정 중 오류 발생:', error);
       alert('댓글을 수정하는 데 실패했습니다.');
@@ -157,8 +152,9 @@ const Comments = ({ memoId, initialComments = [], isLoggedIn = false }) => {
     setIsLoading(true);
     try {
       await apiService.deleteComment(commentId);
-      const updatedComments = comments.filter(comment => comment.id !== commentId);
-      setComments(updatedComments);
+      
+      // 댓글 목록 새로고침
+      refreshComments();
     } catch (error) {
       console.error('댓글 삭제 중 오류 발생:', error);
       alert('댓글을 삭제하는 데 실패했습니다.');
@@ -180,13 +176,25 @@ const Comments = ({ memoId, initialComments = [], isLoggedIn = false }) => {
     <div className="comments-section">
       <div className="comments-header">
         <h3>댓글 ({comments.length})</h3>
-        <button 
-          onClick={toggleCommentForm} 
-          className="add-comment-button"
-          disabled={isLoading}
-        >
-          {showCommentForm ? '취소' : '댓글 작성'}
-        </button>
+        <div className="comments-actions">
+          <button 
+            onClick={refreshComments} 
+            className="refresh-comments-button"
+            disabled={isLoading}
+            title="댓글 새로고침"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>
+            </svg>
+          </button>
+          <button 
+            onClick={toggleCommentForm} 
+            className="add-comment-button"
+            disabled={isLoading}
+          >
+            {showCommentForm ? '취소' : '댓글 작성'}
+          </button>
+        </div>
       </div>
 
       {showCommentForm && (

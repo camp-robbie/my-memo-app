@@ -52,20 +52,30 @@ const Memo = ({ initialData = {}, onDelete, onUpdate, isLoggedIn = false }) => {
     date: formatDateTimeForInput(initialData.date),
   });
 
+  // 메모의 ID를 추적하는 상태
+  const [memoId, setMemoId] = useState(initialData.id || null);
+  
   // 새로 생성된 메모(제목이 없는 경우)는 자동으로 편집 모드로 시작
   const [isEditing, setIsEditing] = useState(!initialData.title);
   const [showComments, setShowComments] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  // initialData.id가 변경될 때 memoId 상태 업데이트
+  useEffect(() => {
+    if (initialData.id) {
+      setMemoId(initialData.id);
+    }
+  }, [initialData.id]);
+
   // 메모 상세 정보 로드 (서버에서 최신 데이터 가져오기)
   useEffect(() => {
     const loadMemoDetails = async () => {
       // 새 메모인 경우 또는 ID가 없는 경우 건너뛰기
-      if (!initialData.id || !initialData.title) return;
+      if (!memoId || !initialData.title) return;
       
       setIsLoading(true);
       try {
-        const memoDetails = await apiService.getMemoById(initialData.id);
+        const memoDetails = await apiService.getMemoById(memoId);
         setMemo({
           title: memoDetails.title || '',
           content: memoDetails.content || '',
@@ -80,7 +90,7 @@ const Memo = ({ initialData = {}, onDelete, onUpdate, isLoggedIn = false }) => {
     };
 
     loadMemoDetails();
-  }, [initialData.id, initialData.title]);
+  }, [memoId, initialData.title]);
 
   const handleSaveMemo = async () => {
     // if (!isLoggedIn) { // 인증 기능 구현 필요
@@ -96,26 +106,25 @@ const Memo = ({ initialData = {}, onDelete, onUpdate, isLoggedIn = false }) => {
     setIsLoading(true);
     try {
       // 임시 ID이거나 ID가 없는 경우 (새 메모 생성)
-      if (!initialData.id || String(initialData.id).startsWith('temp-') || initialData.temporary) {
+      if (!memoId || String(memoId).startsWith('temp-') || initialData.temporary) {
         console.log('새 메모 생성 요청:', memo);
         const newMemo = await apiService.createMemo(memo);
         console.log('생성된 메모:', newMemo);
         
-        // 방금 생성된 메모의 상세 정보 조회
-        const memoDetails = await apiService.getMemoById(newMemo.id);
-        
-        if (onUpdate) {
-          onUpdate({
-            ...memoDetails,
-            id: memoDetails.id // 서버에서 생성된 ID로 업데이트
-          });
-        }
+        // 새 메모 생성 후 페이지 새로고침
+        alert('메모가 저장되었습니다. 댓글을 작성하려면 페이지가 새로고침됩니다.');
+        window.location.reload();
+        return; // 새로고침 후 아래 코드는 실행되지 않음
       } else {
         // 기존 메모 수정
-        console.log('메모 수정 요청:', initialData.id, memo);
-        const updatedMemo = await apiService.updateMemo(initialData.id, memo);
+        console.log('메모 수정 요청:', memoId, memo);
+        const updatedMemo = await apiService.updateMemo(memoId, memo);
         if (onUpdate) {
-          onUpdate({ ...initialData, ...updatedMemo });
+          onUpdate({ 
+            ...initialData, 
+            ...updatedMemo,
+            id: memoId // ID 명시적 유지
+          });
         }
       }
       setIsEditing(false);
@@ -130,9 +139,9 @@ const Memo = ({ initialData = {}, onDelete, onUpdate, isLoggedIn = false }) => {
   // 취소 버튼 기능 구현
   const handleCancelEdit = () => {
     // 임시 ID이거나 제목이 없는 경우 메모 삭제 (새 메모)
-    if (String(initialData.id).startsWith('temp-') || initialData.temporary || !initialData.title) {
+    if (String(memoId).startsWith('temp-') || initialData.temporary || !initialData.title) {
       if (onDelete) {
-        onDelete(initialData.id);
+        onDelete(memoId);
       }
     } else {
       // 기존 메모인 경우 - 편집을 취소하고 원래 상태로 복원
@@ -153,9 +162,9 @@ const Memo = ({ initialData = {}, onDelete, onUpdate, isLoggedIn = false }) => {
     // }
     
     // 임시 메모인 경우 API 호출 없이 삭제
-    if (String(initialData.id).startsWith('temp-') || initialData.temporary) {
+    if (String(memoId).startsWith('temp-') || initialData.temporary) {
       if (onDelete) {
-        onDelete(initialData.id);
+        onDelete(memoId);
       }
       return;
     }
@@ -164,11 +173,11 @@ const Memo = ({ initialData = {}, onDelete, onUpdate, isLoggedIn = false }) => {
       return;
     }
 
-    if (onDelete && initialData.id) {
+    if (onDelete && memoId) {
       setIsLoading(true);
       try {
-        await apiService.deleteMemo(initialData.id);
-        onDelete(initialData.id);
+        await apiService.deleteMemo(memoId);
+        onDelete(memoId);
       } catch (error) {
         console.error('메모 삭제 중 오류 발생:', error);
         alert('메모를 삭제하는 데 실패했습니다.');
@@ -184,6 +193,29 @@ const Memo = ({ initialData = {}, onDelete, onUpdate, isLoggedIn = false }) => {
     //   return;
     // }
     setIsEditing(true);
+  };
+
+  // 현재 memoId가 유효한지 확인하는 함수
+  const hasValidMemoId = () => {
+    return memoId && !String(memoId).startsWith('temp-') && !initialData.temporary;
+  };
+
+  // 댓글 버튼 클릭 핸들러
+  const handleCommentsButtonClick = () => {
+    // 유효한 메모 ID가 없는 경우, 메모를 먼저 저장하라는 메시지 표시
+    if (!hasValidMemoId()) {
+      if (!memo.title) {
+        alert('댓글을 작성하려면 메모 제목을 입력하고 저장해야 합니다.');
+        return;
+      }
+      
+      alert('댓글을 작성하려면 먼저 메모를 저장해야 합니다. 저장 후 페이지가 새로고침됩니다.');
+      handleSaveMemo();
+      return;
+    }
+    
+    // 정상적인 경우 댓글 토글
+    setShowComments(!showComments);
   };
 
   return (
@@ -303,7 +335,7 @@ const Memo = ({ initialData = {}, onDelete, onUpdate, isLoggedIn = false }) => {
                 수정
               </button>
               <button 
-                onClick={() => setShowComments(!showComments)} 
+                onClick={handleCommentsButtonClick} 
                 className="comment-toggle-button"
                 disabled={isLoading}
               >
@@ -311,10 +343,10 @@ const Memo = ({ initialData = {}, onDelete, onUpdate, isLoggedIn = false }) => {
               </button>
             </div>
 
-            {/* 댓글 컴포넌트 */}
-            {showComments && (
+            {/* 댓글 컴포넌트 - 유효한 메모 ID가 있고 showComments가 true일 때만 표시 */}
+            {showComments && hasValidMemoId() && (
               <Comments 
-                memoId={initialData.id} 
+                memoId={memoId} 
                 initialComments={initialData.comments || []} 
                 isLoggedIn={isLoggedIn}
               />
