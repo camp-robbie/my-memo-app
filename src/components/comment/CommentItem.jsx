@@ -52,17 +52,18 @@ const CommentItem = ({ comment, onUpdate, onDelete, isLoading, isLoggedIn = fals
     if (!dateString) return '날짜 정보 없음';
     
     try {
-      // 날짜 문자열을 한국 시간대(UTC+9)로 변환하여 표시
+      // 날짜 문자열을 Date 객체로 변환
       const date = new Date(dateString);
-      // 시간대 보정 (서버 시간을 한국 시간으로 표시)
-      const koreaTime = new Date(date.getTime() + 9 * 60 * 60 * 1000);
-      return koreaTime.toLocaleString('ko-KR', {
+      
+      // 서버 시간을 그대로 표시 (서버에서 이미 KST로 처리되었다고 가정)
+      return date.toLocaleString('ko-KR', {
         year: 'numeric',
         month: 'long',
         day: 'numeric',
         hour: '2-digit',
         minute: '2-digit',
-        hour12: true // 12시간제 사용 (오전/오후 표시)
+        second: '2-digit',
+        hour12: false // 24시간제
       });
     } catch (e) {
       console.error('날짜 변환 오류:', e);
@@ -103,7 +104,7 @@ const CommentItem = ({ comment, onUpdate, onDelete, isLoading, isLoggedIn = fals
             <div className="comment-info">
               <span className="comment-author">{comment.author || '익명'}</span>
               <span className="comment-date">
-                {formatDate(comment.date)}
+                {formatDate(comment.date || comment.updatedAt || comment.createdAt)}
               </span>
             </div>
             <div className="comment-actions">

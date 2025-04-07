@@ -33,7 +33,10 @@ const Comments = ({ memoId, initialComments = [], isLoggedIn = false }) => {
         text: commentText,
         content: commentText,
         author: comment.author || '익명',
-        date: comment.date || comment.updatedAt || comment.createdAt || new Date().toISOString()
+        // 날짜 정보 우선순위: updatedAt > createdAt > date > 현재 시간
+        date: comment.updatedAt || comment.createdAt || comment.date || new Date().toISOString(),
+        updatedAt: comment.updatedAt,
+        createdAt: comment.createdAt
       };
     });
   };
