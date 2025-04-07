@@ -62,7 +62,8 @@
   font-size: 0.95rem;
   cursor: pointer;
   transition: background-color 0.2s;
-  float: right;
+  display: block;
+  margin: 0 auto; /* 중앙 정렬 */
 }
 
 .submit-button:hover {
@@ -128,7 +129,6 @@
     padding: 0.5rem 0.9rem;
     font-size: 0.85rem;
     width: 100%;
-    float: none;
     margin-top: 0.5rem;
   }
 }

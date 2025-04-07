@@ -100,10 +100,14 @@ const Memo = ({ initialData = {}, onDelete, onUpdate, isLoggedIn = false }) => {
         console.log('새 메모 생성 요청:', memo);
         const newMemo = await apiService.createMemo(memo);
         console.log('생성된 메모:', newMemo);
+        
+        // 방금 생성된 메모의 상세 정보 조회
+        const memoDetails = await apiService.getMemoById(newMemo.id);
+        
         if (onUpdate) {
           onUpdate({
-            ...newMemo,
-            id: newMemo.id // 서버에서 생성된 ID로 업데이트
+            ...memoDetails,
+            id: memoDetails.id // 서버에서 생성된 ID로 업데이트
           });
         }
       } else {

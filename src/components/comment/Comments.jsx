@@ -45,7 +45,10 @@ const Comments = ({ memoId, initialComments = [], isLoggedIn = false }) => {
   // 댓글 목록 불러오기
   useEffect(() => {
     const loadComments = async () => {
-      if (!memoId) return;
+      if (!memoId) {
+        console.error('메모 ID가 없습니다. 댓글을 불러올 수 없습니다.');
+        return;
+      }
       
       setIsLoading(true);
       try {
@@ -69,6 +72,12 @@ const Comments = ({ memoId, initialComments = [], isLoggedIn = false }) => {
     //   return;
     // }
     
+    if (!memoId) {
+      console.error('메모 ID가 없습니다. 댓글을 추가할 수 없습니다.');
+      alert('댓글을 추가할 수 없습니다. 페이지를 새로고침하고 다시 시도해주세요.');
+      return;
+    }
+    
     if (!newComment.text || !newComment.author) {
       console.error('댓글 내용 또는 작성자가 누락되었습니다');
       return;
@@ -85,7 +94,7 @@ const Comments = ({ memoId, initialComments = [], isLoggedIn = false }) => {
         throw new Error('서버에서 유효한 댓글을 반환하지 않았습니다');
       }
       
-      // 새 댓글 추가
+      // 새 댓글을 상태에 추가
       setComments(prevComments => [...prevComments, addedComment]);
       setShowCommentForm(false);
     } catch (error) {
@@ -103,9 +112,15 @@ const Comments = ({ memoId, initialComments = [], isLoggedIn = false }) => {
     //   return;
     // }
     
+    if (!memoId) {
+      console.error('메모 ID가 없습니다. 댓글을 수정할 수 없습니다.');
+      alert('댓글을 수정할 수 없습니다. 페이지를 새로고침하고 다시 시도해주세요.');
+      return;
+    }
+    
     setIsLoading(true);
     try {
-      const response = await apiService.updateComment(updatedComment.id, updatedComment.text || updatedComment.content);
+      const response = await apiService.updateComment(memoId, updatedComment.id, updatedComment.text || updatedComment.content);
       // 응답 구조가 다양한 경우를 고려하여 처리
       const updatedContent = response.content || response.text || updatedComment.text || updatedComment.content;
       const updatedDate = response.updatedAt || response.date || new Date().toISOString();
