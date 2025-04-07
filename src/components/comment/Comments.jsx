@@ -64,10 +64,10 @@ const Comments = ({ memoId, initialComments = [], isLoggedIn = false }) => {
 
   const handleAddComment = async (newComment) => {
     // 로그인 확인
-    if (!isLoggedIn) {
-      alert('댓글을 작성하려면 로그인이 필요합니다.');
-      return;
-    }
+    // if (!isLoggedIn) {
+    //   alert('댓글을 작성하려면 로그인이 필요합니다.');
+    //   return;
+    // }
     
     if (!newComment.text || !newComment.author) {
       console.error('댓글 내용 또는 작성자가 누락되었습니다');
@@ -98,10 +98,10 @@ const Comments = ({ memoId, initialComments = [], isLoggedIn = false }) => {
 
   const handleUpdateComment = async (updatedComment) => {
     // 로그인 확인
-    if (!isLoggedIn) {
-      alert('댓글을 수정하려면 로그인이 필요합니다.');
-      return;
-    }
+    // if (!isLoggedIn) {
+    //   alert('댓글을 수정하려면 로그인이 필요합니다.');
+    //   return;
+    // }
     
     setIsLoading(true);
     try {
@@ -130,10 +130,10 @@ const Comments = ({ memoId, initialComments = [], isLoggedIn = false }) => {
 
   const handleDeleteComment = async (commentId) => {
     // 로그인 확인
-    if (!isLoggedIn) {
-      alert('댓글을 삭제하려면 로그인이 필요합니다.');
-      return;
-    }
+    // if (!isLoggedIn) {
+    //   alert('댓글을 삭제하려면 로그인이 필요합니다.');
+    //   return;
+    // }
     
     if (!window.confirm('이 댓글을 삭제하시겠습니까?')) {
       return;
@@ -154,10 +154,10 @@ const Comments = ({ memoId, initialComments = [], isLoggedIn = false }) => {
 
   // 댓글 작성 폼 토글
   const toggleCommentForm = () => {
-    if (!isLoggedIn) {
-      alert('댓글을 작성하려면 로그인이 필요합니다.');
-      return;
-    }
+    // if (!isLoggedIn) {
+    //   alert('댓글을 작성하려면 로그인이 필요합니다.');
+    //   return;
+    // }
     setShowCommentForm(!showCommentForm);
   };
 

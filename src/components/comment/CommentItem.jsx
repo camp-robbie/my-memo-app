@@ -15,18 +15,18 @@ const CommentItem = ({ comment, onUpdate, onDelete, isLoading, isLoggedIn = fals
   const [editedText, setEditedText] = useState(commentText);
 
   const handleEditClick = () => {
-    if (!isLoggedIn) {
-      alert('댓글을 수정하려면 로그인이 필요합니다.');
-      return;
-    }
+    // if (!isLoggedIn) {
+    //   alert('댓글을 수정하려면 로그인이 필요합니다.');
+    //   return;
+    // }
     setIsEditing(true);
   };
   
   const handleDeleteClick = () => {
-    if (!isLoggedIn) {
-      alert('댓글을 삭제하려면 로그인이 필요합니다.');
-      return;
-    }
+    // if (!isLoggedIn) {
+    //   alert('댓글을 삭제하려면 로그인이 필요합니다.');
+    //   return;
+    // }
     onDelete(comment.id);
   };
 

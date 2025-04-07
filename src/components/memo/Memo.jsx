@@ -248,7 +248,8 @@ const Memo = ({ initialData = {}, onDelete, onUpdate, isLoggedIn = false }) => {
               onClick={handleDeleteMemo} 
               className="memo-delete-icon" 
               title="메모 삭제"
-              disabled={isLoading || !isLoggedIn}
+              disabled={isLoading}
+              // disabled={isLoading || !isLoggedIn}
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <polyline points="3 6 5 6 21 6"></polyline>
